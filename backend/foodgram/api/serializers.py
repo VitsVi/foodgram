@@ -2,8 +2,10 @@ import uuid
 from rest_framework import exceptions, serializers
 from django.core.validators import RegexValidator, validate_email
 from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.tokens import RefreshToken
 from drf_extra_fields.fields import Base64ImageField
+from recipe.models import Tag, Recipe, Ingredient
+from add_by_user.models import ShoppingList, FavoriteRecipes
+from core.models import Subscribe
 User = get_user_model()
 
 MAX_LENGTH = 150
@@ -26,38 +28,6 @@ class UserRequiredFieldsSerializerMixin(serializers.ModelSerializer):
         required=True
     )
 
-
-class TokenObtainByCodeSerializer(serializers.ModelSerializer):
-    """Кастомный сериалайзер для получения токена."""
-
-    username = serializers.CharField()
-    email = serializers.EmailField()
-
-
-    class Meta:
-        model = User
-        fields = ['username', 'email']
-
-
-    def validate(self, data):
-        username = data.get("username")
-        user_object = User.objects.filter(
-            username=username
-        ).first()
-        if user_object is None:
-            raise exceptions.NotFound(
-                "Пользователь не найден."
-            )
-        return data
-
-    def create(self, validated_data):
-        # Создаем токен для пользователя.
-        user = validated_data['user']
-        refresh = RefreshToken.for_user(user)
-        return {
-            'auth_token': str(refresh.access_token),
-        }
-    
 
 class UserProfileSerializer(
     UserRequiredFieldsSerializerMixin,
@@ -161,10 +131,99 @@ class ProfleAvatarSerializer(serializers.ModelSerializer):
             'avatar',
         ]
 
-    # def update(self, validated_data):
-    #     User.objects.update(id=self.id, avatar=validated_data["avatar"])
-    #     return validated_data
+
+class TagSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Tag."""
+
+    name = serializers.CharField(read_only=True)
+    slug = serializers.SlugField(read_only=True)
+
+    class Meta:
+        moodel = Tag
+        fields = [
+            'id',
+            'name',
+            'slug',
+        ]
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Recipe."""
+
+
+    class Meta:
+        model = Recipe
+        fields = [
+            'id',
+            'tags',
+            'author',
+            'name',
+            'image',
+            'text',
+            'ingredients',
+            'coocking_time',
+
+        ]
+
+
+class TagSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Tag."""
+
+    class Meta:
+        model = Tag
+        fields = [
+            'id',
+            'name',
+            'slug',
+        ]
 
     
-    # def perform_destroy(self, instance):
-    #     User.objects.update(id=self.id, avatar=None)
+class IngredientSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Ингредиентов."""
+
+    class Meta:
+        model = Ingredient
+        fields = [
+            'id',
+            'name',
+            'unit_measure',
+        ]
+
+
+class ShoppingListSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Списка покупок."""
+
+    recipes = RecipeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ShoppingList
+        fields = [
+            'user',
+            'recipes',
+        ]
+
+
+class FavoriteRecipesSerializer(serializers.ModelSerializer):
+    """Сериалайзер для модели Ибранных рецептов."""
+
+    recipes = RecipeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = FavoriteRecipes
+        fields = [
+            'user',
+            'recipes'
+        ]
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    """Сериалайзер для подписок пользователя."""
+
+    author = UserProfileSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Subscribe
+        fields = [
+            'subscriber',
+            'author',
+        ]

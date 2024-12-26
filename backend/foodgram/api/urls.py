@@ -5,10 +5,17 @@ from .views import (
     UserProfileViewset,
     ProfileAvatarViewset,
     GetTokenViewset,
-    ChangeProfilePasswordViewset
+    ChangeProfilePasswordViewset,
+    TagViewset,
+    RecipeViewset,
+    IngredientViewset,
+    ShoppingListViewset,
+    FavoriteRecipesViewset,
 )
 
 router = DefaultRouter(trailing_slash=True)
+
+# пользователи
 router.register('users', UserProfileViewset, basename='users')
 
 router.register(
@@ -22,13 +29,24 @@ router.register(
     basename='set_password'
 )
 
+router.register('tags', TagViewset, basename='tags')
+router.register(
+    'ingredients',
+    IngredientViewset,
+    basename='ingredients'
+)
+router.register('recipes', RecipeViewset, basename='recipes')
+router.register(
+    r'users/(?P<user_id>\d+)/shopping_cart',
+    ShoppingListViewset,
+    basename='shopping_cart'
+)
+router.register(
+    r'recipes/(?P<recipe_id>\d+)/favorite',
+    FavoriteRecipesViewset,
+    basename='favorite'
+)
 urlpatterns = [
-    #path(f'auth/signup/', SignUpViewset.as_view(), name='signup'),
     path('auth/', include('djoser.urls.authtoken')),
-    # path(
-    #     f'auth/token/login/',
-    #     GetTokenViewset,
-    #     name='get_token'
-    # ),
     path('', include(router.urls)),
 ]
