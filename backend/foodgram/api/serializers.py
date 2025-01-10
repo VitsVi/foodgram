@@ -39,6 +39,7 @@ class UserProfileSerializer(
     last_name = serializers.CharField(max_length=MAX_LENGTH, required=True)
     password = serializers.CharField(max_length=MAX_LENGTH, required=True)
     avatar = serializers.ImageField(required=False)
+    is_subscribed = serializers.BooleanField(read_only=True, default=False)
     class Meta:
         model = User
         fields = [
@@ -49,6 +50,7 @@ class UserProfileSerializer(
             'password',
             'email',
             'avatar',
+            'is_subscribed'
         ]
 
 
@@ -84,10 +86,13 @@ class UserProfileSerializer(
 
    
     def to_representation(self, instance):
-        """Исключить поле 'password' из ответа."""
+        """Исключить поле 'password','avatar' из ответа."""
 
         representation = super().to_representation(instance)
         representation.pop('password', None)
+        if self.context["request"].method == 'POST':
+            representation.pop('avatar', None)
+            representation.pop('is_subscribed', None)
         return representation
     
 
@@ -146,10 +151,27 @@ class TagSerializer(serializers.ModelSerializer):
             'slug',
         ]
 
-
+class IngredientRecipeSerializer(serializers.Serializer):
+    """Связь ингредиентов и рецепта."""
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all()
+    )
+    amount = serializers.IntegerField(min_value=1)
+    
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериалайзер для модели Recipe."""
 
+    tags = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Tag.objects.all()
+    )
+    ingredients = IngredientRecipeSerializer(
+        many=True,
+        read_only=True,
+    )
+    image = Base64ImageField()
+    author = serializers.CharField(read_only=True)
+    cooking_time = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = Recipe
@@ -161,7 +183,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             'image',
             'text',
             'ingredients',
-            'coocking_time',
+            'cooking_time',
 
         ]
 
@@ -186,7 +208,7 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'name',
-            'unit_measure',
+            'measurement_unit',
         ]
 
 

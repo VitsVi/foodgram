@@ -38,7 +38,7 @@ class Ingredient(models.Model):
         null=False
     )
 
-    unit_measure = models.CharField(
+    measurement_unit = models.CharField(
         verbose_name='Единица измерения',
         max_length=CHAR_MAX_LENGTH,
         null=False
@@ -83,14 +83,13 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты',
     )
 
-    tags = models.ForeignKey(
+    tags = models.ManyToManyField(
         Tag,
-        on_delete=models.CASCADE,
         related_name='recipe',
         verbose_name='Теги',
     )
 
-    coocking_time = models.TimeField(
+    cooking_time = models.IntegerField(
         verbose_name='Время приготовления(мин)',
     )
 

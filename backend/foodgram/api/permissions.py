@@ -6,7 +6,7 @@ class IfMeAuthenticated(BasePermission):
     """
     def has_object_permission(self, request, view, obj):
         if view.kwargs.get('pk') == 'me':
-            if request.user.is_autenticated:
+            if request.user.is_authenticated:
                 return obj == request.user
             else:
                 return False
