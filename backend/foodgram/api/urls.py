@@ -8,8 +8,6 @@ from .views import (
     TagViewset,
     RecipeViewset,
     IngredientViewset,
-    ShoppingListViewset,
-    FavoriteRecipesViewset,
     SubscribeReadViewset,
     SubscribeWriteViewset
 )
@@ -31,33 +29,16 @@ router.register(
 # рецепты
 router.register('recipes', RecipeViewset, basename='recipes')
 
-# список покупок
 router.register(
-    r'users/(?P<user_id>\d+)/shopping_cart',
-    ShoppingListViewset,
-    basename='shopping_cart'
-)
-
-# избранное
-router.register(
-    r'recipes/(?P<recipe_id>\d+)/favorite',
-    FavoriteRecipesViewset,
-    basename='favorite'
-)
-
-# подписки
-router.register(
-    'users/subscriptions',
-    SubscribeReadViewset,
-    basename='subscriptions',
-    )
-router.register(
-    r'users/(?P<user_id>\d+)/subscribe',
+    r'users/(?P<author_id>\d+)/subscribe',
     SubscribeWriteViewset,
     basename='subscribe'
 )
 
 urlpatterns = [
+    path('users/subscriptions/', SubscribeReadViewset.as_view(
+        {'get': 'list'}
+    ), name='subscriptions'),
     path('auth/', include('djoser.urls.authtoken')),
     path('users/set_password/', ChangeProfilePasswordView.as_view(), name='password'),
     path('', include(router.urls)),

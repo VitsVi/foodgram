@@ -4,13 +4,12 @@ from recipe.models import (
     Ingredient,
     Recipe,
     Tag,
+    IngredientRecipe,
+    ShoppingList,
+    FavoriteRecipes
 )
 from core.models import (
     Subscribe,
-)
-from add_by_user.models import (
-    ShoppingList,
-    FavoriteRecipes
 )
 
 AVATAR = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAgMAAABieywaAAAACVBMVEUAAAD///9fX1/S0ecCAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAACklEQVQImWNoAAAAggCByxOyYQAAAABJRU5ErkJggg=="
@@ -66,18 +65,20 @@ class Command(BaseCommand):
             print('ТЕГИ.', e)
         
         try:
-            # Создание тестовых ингредиентов
+            # Создание тестовых ингредиентов с measurement_unit
             ingredients = [
                 {"name": "Картофель", "measurement_unit": "кг"},
                 {"name": "Морковь", "measurement_unit": "шт"},
                 {"name": "Сыр", "measurement_unit": "г"},
             ]
+
+            # Создаем объекты ингредиентов
             ingredient_objects = [Ingredient(**ingredient) for ingredient in ingredients]
             Ingredient.objects.bulk_create(ingredient_objects)
             print(f"Создано ингредиентов: {Ingredient.objects.count()}")
         except Exception as e:
             print('ИНГРЕДИЕНТЫ. ', e)
-        
+
         try:
             # Создание тестовых рецептов
             recipes = [
@@ -86,7 +87,7 @@ class Command(BaseCommand):
                     "name": "Омлет с сыром",
                     "image": "path/to/omelet.jpg",
                     "text": "Простой и вкусный омлет с сыром.",
-                    "ingredients": Ingredient.objects.get(name="Сыр"),
+                    "ingredients": [("Сыр", 100)],  # Указываем только название ингредиента и количество
                     "tags": [tags[0]],
                     "cooking_time": 15,
                 },
@@ -95,7 +96,7 @@ class Command(BaseCommand):
                     "name": "Картофельное пюре",
                     "image": "path/to/mashed_potatoes.jpg",
                     "text": "Идеальное картофельное пюре.",
-                    "ingredients": Ingredient.objects.get(name="Картофель"),
+                    "ingredients": [("Картофель", 500)],  # Только название и количество
                     "tags": [tags[1]],
                     "cooking_time": 10,
                 },
@@ -104,18 +105,37 @@ class Command(BaseCommand):
                     "name": "Суп из моркови",
                     "image": "path/to/carrot_soup.jpg",
                     "text": "Полезный суп из моркови.",
-                    "ingredients": Ingredient.objects.get(name="Морковь"),
+                    "ingredients": [("Морковь", 300)],  # Только название и количество
                     "tags": [tags[2]],
                     "cooking_time": 5,
                 },
             ]
+
             for recipe_data in recipes:
                 tags_for_recipe = recipe_data.pop("tags")
+                ingredients_data = recipe_data.pop("ingredients")
+                
+                # Создаем рецепт
                 recipe = Recipe.objects.create(**recipe_data)
+                
+                # Связываем ингредиенты с рецептом через промежуточную модель
+                for ingredient_name, amount in ingredients_data:
+                    ingredient = Ingredient.objects.get(name=ingredient_name)
+                    
+                    # Создаем запись в промежуточной модели IngredientRecipe
+                    IngredientRecipe.objects.create(
+                        recipe=recipe,
+                        ingredient=ingredient,
+                        amount=amount  # Сохраняем только amount, measurement_unit подтянется из Ingredient
+                    )
+                
+                # Связываем теги
                 recipe.tags.set(tags_for_recipe)
+
             print(f"Создано рецептов: {Recipe.objects.count()}")
         except Exception as e:
             print('РЕЦЕПТЫ. ', e)
+
 
 
         users = User.objects.all()
@@ -132,24 +152,30 @@ class Command(BaseCommand):
         try:
             user_objects = User.objects.all()
             shopping_lists = [
-                ShoppingList.objects.create(user=user_objects[0]),
-                ShoppingList.objects.create(user=user_objects[1]),
-                ShoppingList.objects.create(user=user_objects[2]),
+                ShoppingList.objects.create(
+                    user=user_objects[0]).recipes.add(Recipe.objects.get(name="Омлет с сыром")
+                ),
+                ShoppingList.objects.create(
+                    user=user_objects[1]).recipes.add(Recipe.objects.get(name="Картофельное пюре")
+                ),
+                ShoppingList.objects.create(
+                    user=user_objects[2]).recipes.add(Recipe.objects.get(name="Суп из моркови")
+                ),
             ]
-            shopping_lists[0].recipes.add(Recipe.objects.get(name="Омлет с сыром"))
-            shopping_lists[1].recipes.add(Recipe.objects.get(name="Картофельное пюре"))
-            shopping_lists[2].recipes.add(Recipe.objects.get(name="Суп из моркови"))
             print(f"Создано списков покупок: {ShoppingList.objects.count()}")
 
-            # Создание избранных рецептов
-            favorite_recipes = [
-                FavoriteRecipes.objects.create(user=user_objects[0]),
-                FavoriteRecipes.objects.create(user=user_objects[1]),
-                FavoriteRecipes.objects.create(user=user_objects[2]),
-            ]
-            favorite_recipes[0].recipes.add(Recipe.objects.get(name="Картофельное пюре"))
-            favorite_recipes[1].recipes.add(Recipe.objects.get(name="Суп из моркови"))
-            favorite_recipes[2].recipes.add(Recipe.objects.get(name="Омлет с сыром"))
+        except Exception as e:
+            print('Не удалось ', e)
+        try:
+            user_objects = User.objects.all()
+            favorite_recipe_1 = FavoriteRecipes.objects.create(user=user_objects[0])
+            favorite_recipe_2 = FavoriteRecipes.objects.create(user=user_objects[1])
+            favorite_recipe_3 = FavoriteRecipes.objects.create(user=user_objects[2])
+
+            # Добавляем рецепты через ManyToManyField после сохранения объектов
+            favorite_recipe_1.recipes.add(Recipe.objects.get(name="Картофельное пюре"))
+            favorite_recipe_2.recipes.add(Recipe.objects.get(name="Суп из моркови"))
+            favorite_recipe_3.recipes.add(Recipe.objects.get(name="Омлет с сыром"))
             print(f"Создано избранных рецептов: {FavoriteRecipes.objects.count()}")
         
         except Exception as e:

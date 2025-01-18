@@ -1,7 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.contrib.auth import get_user_model
-from foodgram import settings
+
 
 class User(AbstractUser):
     """Расширенная модель пользователя."""
@@ -11,17 +10,6 @@ class User(AbstractUser):
         null=True,
     )
 
-    # # cмена related_name для полей
-    # groups = models.ManyToManyField(
-    #     'auth.Group',
-    #     related_name='core_user_groups',
-    #     blank=True,
-    # )
-    # user_permissions = models.ManyToManyField(
-    #     'auth.Permission',
-    #     related_name='core_user_permissions',
-    #     blank=True,
-    # )
 
     class Meta:
         verbose_name = 'Пользователь'
@@ -34,8 +22,18 @@ class User(AbstractUser):
 class Subscribe(models.Model):
     """Подписки пользователей."""
 
-    subscriber = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscriptions')
-    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='subscribers')
+    subscriber = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscriptions',
+        verbose_name='Подписчик'
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='subscribers',
+        verbose_name='Автор'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
