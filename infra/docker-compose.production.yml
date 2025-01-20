@@ -9,7 +9,7 @@ services:
       - ./.env
 
   frontend:
-    container_name: foodgram-front
+    container_name: vitsman/foodgram-frontend:latest
     build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
@@ -27,7 +27,6 @@ services:
       - ./.env
 
   nginx:
-    container_name: foodgram-proxy
     image: nginx:1.25.4-alpine
     ports:
       - "80:80"
