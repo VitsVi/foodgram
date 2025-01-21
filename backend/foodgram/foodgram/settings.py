@@ -1,8 +1,9 @@
-from dotenv import load_dotenv
 import os
-from pathlib import Path
-from datetime import timedelta
 import secrets
+from datetime import timedelta
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 load_dotenv()
 
@@ -12,11 +13,9 @@ SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(50))
 
 DEBUG = os.getenv('DEBUG_MODE', 'false').lower() in ('1', 'true')
 
-ALLOWED_HOSTS = ['foodgramyandex.ddns.net','84.201.136.34','localhost']
+ALLOWED_HOSTS = ['foodgramyandex.ddns.net', '84.201.136.34', 'localhost']
 
 AUTH_USER_MODEL = 'core.User'
-
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -127,7 +126,7 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
-    'LOGIN_FIELD': 'email', 
+    'LOGIN_FIELD': 'email',
     'LOGOUT_ON_PASSWORD_CHANGE': True,
 }
 

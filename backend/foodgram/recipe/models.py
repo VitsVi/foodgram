@@ -1,12 +1,13 @@
-from django.db import models
-from django.core import validators
 from django.contrib.auth import get_user_model
+from django.core import validators
+from django.db import models
 
 User = get_user_model()
 
 MAX_LENGTH_TAG = 50
 CHAR_MAX_LENGTH = 256
 SLUG_LENGTH = 100
+
 
 class Tag(models.Model):
     """Модель тегов."""
@@ -27,10 +28,9 @@ class Tag(models.Model):
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
-    
     def __str__(self):
         return self.name
-    
+
 
 class Ingredient(models.Model):
     """Модель ингредиентов."""
@@ -50,13 +50,13 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-    
+
     def __str__(self):
         return self.name
-    
+
 
 class Recipe(models.Model):
-    """Модель рецептов"""
+    """Модель рецептов."""
 
     author = models.ForeignKey(
         User,
@@ -109,10 +109,10 @@ class Recipe(models.Model):
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
         ordering = ('-created',)
-    
+
     def __str__(self):
         return self.name
-    
+
 
 class IngredientRecipe(models.Model):
     """Промежуточная модель для связи ингредиентов с рецептом."""
@@ -132,17 +132,20 @@ class IngredientRecipe(models.Model):
     amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         validators=[
-            validators.MinValueValidator(1, message='Минимальное количество 1'),
+            validators.MinValueValidator(
+                1,
+                message='Минимальное количество 1'
+            ),
         ]
     )
 
     class Meta:
         verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецепта'
-    
+
     def __str__(self):
         return f'{self.ingredient} {self.recipe}'
-    
+
 
 class TagInRecipe(models.Model):
     """Модель тегов для рецепта."""
@@ -168,10 +171,10 @@ class TagInRecipe(models.Model):
 
     def __str__(self):
         return f"{self.tag} {self.recipe}"
-    
+
 
 class ShoppingList(models.Model):
-    """Список покупок пользователя"""
+    """Список покупок пользователя."""
 
     user = models.ForeignKey(
         User,
@@ -190,13 +193,12 @@ class ShoppingList(models.Model):
         verbose_name_plural = 'Список покупок'
         unique_together = ('user',)
 
-
     def __str__(self):
         return f"Список покупок {self.user.username}"
-    
+
 
 class FavoriteRecipes(models.Model):
-    """Модель избранных рецептов"""
+    """Модель избранных рецептов."""
 
     user = models.ForeignKey(
         User,

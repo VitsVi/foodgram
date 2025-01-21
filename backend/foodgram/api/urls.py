@@ -1,16 +1,9 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
-from .views import (
-    UserProfileViewset,
-    ProfileAvatarViewset,
-    ChangeProfilePasswordView,
-    TagViewset,
-    RecipeViewset,
-    IngredientViewset,
-    SubscribeReadViewset,
-    SubscribeWriteViewset
-)
+from .views import (ChangeProfilePasswordView, IngredientViewset,
+                    ProfileAvatarViewset, RecipeViewset, SubscribeReadViewset,
+                    SubscribeWriteViewset, TagViewset, UserProfileViewset)
 
 router = DefaultRouter(trailing_slash=True)
 
@@ -40,7 +33,11 @@ urlpatterns = [
         {'get': 'list'}
     ), name='subscriptions'),
     path('auth/', include('djoser.urls.authtoken')),
-    path('users/set_password/', ChangeProfilePasswordView.as_view(), name='password'),
+    path(
+        'users/set_password/',
+        ChangeProfilePasswordView.as_view(),
+        name='password'
+    ),
     path('', include(router.urls)),
     path('users/me/avatar/', ProfileAvatarViewset.as_view(
         {'put': 'update', 'delete': 'destroy'}

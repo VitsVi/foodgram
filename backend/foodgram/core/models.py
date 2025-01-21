@@ -10,7 +10,6 @@ class User(AbstractUser):
         null=True,
     )
 
-
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
@@ -40,6 +39,6 @@ class Subscribe(models.Model):
         unique_together = ('subscriber', 'author')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-    
+
     def __str__(self):
         return f"{self.subscriber} подписан на {self.author}"
