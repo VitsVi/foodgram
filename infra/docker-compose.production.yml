@@ -9,7 +9,7 @@ services:
       - ./.env
 
   frontend:
-    container_name: vitsman/foodgram-frontend:latest
+    image: vitsman/foodgram-frontend:latest
     restart: always
     #build: ../frontend
    # volumes:
