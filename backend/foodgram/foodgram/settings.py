@@ -11,9 +11,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(50))
 
-DEBUG = os.getenv('DEBUG_MODE', 'false').lower() in ('1', 'true')
+DEBUG = os.getenv('DEBUG_MODE', False).lower() in ('1', 'true')
 
-ALLOWED_HOSTS = ['foodgramyandex.ddns.net', '84.201.136.34', 'localhost']
+ALLOWED_HOSTS = [
+    'foodgramyandex.ddns.net',
+    '84.201.136.34',
+    'localhost',
+    '127.0.0.1'
+]
 
 AUTH_USER_MODEL = 'core.User'
 
@@ -108,7 +113,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'collected_static'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -144,9 +149,5 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-CORS_ORIGIN_WHITELIST = [
-    'http://localhost:3000'
-]
 
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'data')
