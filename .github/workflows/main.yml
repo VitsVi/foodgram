@@ -88,7 +88,7 @@ jobs:
       - name: Check if file exists
         run: |
           ls -la
-          ls -la foodgram/
+          ls -la backend/foodgram/
       - name: Copy files to server via SSH
         uses: appleboy/scp-action@master
         with:
@@ -99,7 +99,7 @@ jobs:
           source: |
             docker-compose.production.yml
             nginx.conf
-          target: foodgram
+          target: infra
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@master
         with:
