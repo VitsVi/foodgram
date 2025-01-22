@@ -111,10 +111,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = BASE_DIR / 'collected_static'
-
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
@@ -142,12 +138,19 @@ SIMPLE_JWT = {
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 
-
 EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 
+STATIC_URL = '/static/'
+
+STATIC_ROOT = '/staticfiles'
+
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = '/app/media'
 
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'data')
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://foodgramyandex.ddns.net"
+]
