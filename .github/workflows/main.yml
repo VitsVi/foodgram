@@ -74,7 +74,6 @@ jobs:
           context: ./frontend/
           push: true
           tags: vitsman/foodgram-frontend:latest
-
   deploy:
     runs-on: ubuntu-latest
     needs:
@@ -82,17 +81,15 @@ jobs:
       - build_and_push_frontend
     steps:
       - uses: actions/checkout@v3
-      - name: Copy files to server via SSH
+      - name: Copy docker-compose.production.yml via SSH
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: |
-            "docker-compose.production.yml"
-            "nginx.conf"
-          target: foodgram
+          source: "docker-compose.production.yml"
+          target: "foodgram"
       - name: Deploy to server via SSH
         uses: appleboy/ssh-action@master
         with:
