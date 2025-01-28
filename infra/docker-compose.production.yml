@@ -21,7 +21,7 @@ services:
       - ./.env
 
   frontend:
-    image: vitsman/foodgram_frontend:latest
+    image: vitsman/foodgram-frontend:latest
     restart: always
     volumes:
       - static_volume:/app/build
