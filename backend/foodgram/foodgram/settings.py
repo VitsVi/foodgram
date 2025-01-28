@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY', secrets.token_urlsafe(50))
 
-DEBUG = os.getenv('DEBUG_MODE', False).lower() in ('1', 'true')
+DEBUG = bool(os.getenv('DEBUG_MODE', False))
 
 ALLOWED_HOSTS = [
     'foodgramyandex.ddns.net',
@@ -67,16 +67,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-DB_PORT_DEFAULT = 5432
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('POSTGRES_DB', 'foodgram'),
         'USER': os.getenv('POSTGRES_USER', 'foodgram'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', ''),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'pass'),
         'HOST': os.getenv('DB_HOST', 'db'),
-        'PORT': os.getenv('DB_PORT', DB_PORT_DEFAULT)
+        'PORT': os.getenv('DB_PORT', 5432)
     }
 }
 # DATABASES = {
