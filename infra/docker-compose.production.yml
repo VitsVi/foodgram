@@ -13,8 +13,8 @@ services:
     image: vitsman/foodgram_back:latest
     restart: always
     volumes:
-      - static_volume:/app/staticfiles  # Было
-      - media_volume:/app/media         # Было
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media        
       - ./backend_static/:/backend_static
     depends_on:
       - db
@@ -33,7 +33,7 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/templates/default.conf.template
       - static_volume:/var/www/html/static
       - media_volume:/var/www/html/media
       - ../docs/:/usr/share/nginx/html/api/docs/
