@@ -1,4 +1,5 @@
-name: Deploy Foodgram
+
+name: Foodgram final workflow
 
 on:
   push:
@@ -6,6 +7,74 @@ on:
       - main
 
 jobs:
+  tests:
+    name: pip install, flake8 tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.10
+        env:
+          POSTGRES_USER: django_user
+          POSTGRES_PASSWORD: django_password
+          POSTGRES_DB: django_db
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt 
+          cd frontend/
+          npm install
+          python -m pip install --upgrade pip 
+          pip install flake8==6.0.0 flake8-isort==6.0.0
+      - name: Test with flake8
+        run: python -m flake8 backend/
+
+  build_and_push_backend:
+    name: Push Backend Docker Image
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push backend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./backend/foodgram/
+          push: true
+          tags: vitsman/foodgram_back:latest
+
+  build_and_push_frontend:
+    name: Push Frontend Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build and push frontend image
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend/
+          push: true
+          tags: vitsman/foodgram-frontend:latest
+
   deploy:
     runs-on: ubuntu-latest
 
