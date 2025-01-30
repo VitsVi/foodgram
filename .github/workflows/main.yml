@@ -116,5 +116,5 @@ jobs:
             sudo docker compose -f infra/docker-compose.production.yml up -d
             sudo docker compose -f infra/docker-compose.production.yml exec backend python manage.py migrate
             sudo docker compose -f infra/docker-compose.production.yml exec backend python manage.py collectstatic --noinput
-
+            sudo docker cp backend:/app/staticfiles/. ./backend_static/
             sudo systemctl restart nginx
