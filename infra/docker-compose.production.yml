@@ -14,8 +14,7 @@ services:
     restart: always
     volumes:
       - static_volume:/app/staticfiles
-      - media_volume:/app/media        
-      - ./backend_static/:/backend_static
+      - media_volume:/app/media
     depends_on:
       - db
     env_file:
@@ -38,7 +37,6 @@ services:
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
       - ./backend_static:/var/www/html/static_backend
-      #- ./staticfiles:/var/www/html/static
     depends_on:
       - backend
 
