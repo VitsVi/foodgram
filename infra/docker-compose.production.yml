@@ -31,7 +31,7 @@ services:
     image: nginx:1.25.4-alpine
     restart: always
     ports:
-      - "8081:80"
+      - 8081:80
     volumes:
       - ./nginx.conf:/etc/nginx/templates/default.conf.template
       - static_volume:/var/www/html/static
@@ -41,7 +41,6 @@ services:
       - ./backend_static:/var/www/html/static
     depends_on:
       - backend
-      - frontend
 
 volumes:
   postgres_data:
