@@ -91,7 +91,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "infra/docker-compose.production.yml"
-          target: "~/foodgram"
+          target: "~/foodgram/docker-compose.production.yml"
 
       # - name: Deploy to server via SSH
       #   uses: appleboy/ssh-action@master
