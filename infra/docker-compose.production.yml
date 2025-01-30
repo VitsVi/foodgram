@@ -33,11 +33,11 @@ services:
       - 8081:80
     volumes:
       - ./nginx.conf:/etc/nginx/templates/default.conf.template
-      - static_volume:/var/www/html/
-      - media_volume:/var/www/html/
+      - static_volume:/var/www/html/static
+      - media_volume:/var/www/html/media
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
-      - ./backend_static:/var/www/html/static
+      - ./backend_static:/var/www/html/static_back
     depends_on:
       - backend
 
