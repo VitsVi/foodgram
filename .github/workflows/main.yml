@@ -92,6 +92,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           source: "docker-compose.production.yml"
           target: "~/foodgram/"
+          tar_exec: "tar --overwrite"
 
       # - name: Deploy to server via SSH
       #   uses: appleboy/ssh-action@master
