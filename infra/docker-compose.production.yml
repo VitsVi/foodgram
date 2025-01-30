@@ -23,7 +23,6 @@ services:
 
   frontend:
     image: vitsman/foodgram-frontend:latest
-    restart: always
     volumes:
       - static_volume:/app/build
 
