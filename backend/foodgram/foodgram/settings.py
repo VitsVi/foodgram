@@ -141,11 +141,11 @@ EMAIL_FILE_PATH = BASE_DIR / 'sent_emails'
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = 'app/staticfiles'
+STATIC_ROOT = 'staticfiles'
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = '/app/media'
+MEDIA_ROOT = 'media'
 
 CSV_FILES_DIR = os.path.join(BASE_DIR, 'data')
 
