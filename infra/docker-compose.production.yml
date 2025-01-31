@@ -36,7 +36,6 @@ services:
       - media_volume:/var/www/html/media
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
-      - ./backend_static:/var/www/html/static
     depends_on:
       - backend
 
