@@ -13,7 +13,7 @@ services:
     image: vitsman/foodgram_back:latest
     restart: always
     volumes:
-      - static_volume:/app/staticfiles
+      - static_volume:/backend_static
       - media_volume:/app/media
     depends_on:
       - db
@@ -32,7 +32,7 @@ services:
       - 8081:80
     volumes:
       - ./nginx.conf:/etc/nginx/templates/default.conf.template
-      - static_volume:/var/www/html/static
+      - static_volume:/staticfiles/
       - media_volume:/var/www/html/media
       - ../docs/:/usr/share/nginx/html/api/docs/
       - ../docs/openapi-schema.yml:/usr/share/nginx/html/api/docs/openapi-schema.yml
