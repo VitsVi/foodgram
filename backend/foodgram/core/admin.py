@@ -1,11 +1,55 @@
 from django.contrib import admin
-from recipe.models import FavoriteRecipes, Recipe, ShoppingList
+from recipe.models import (
+    FavoriteRecipes,
+    Recipe,
+    ShoppingList,
+    Ingredient,
+    Tag
+)
+from core.models import User, Subscribe
+
+
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+
+    list_display = [
+        'username',
+        'first_name',
+        'last_name',
+        'avatar',
+        'email',
+        'is_superuser',
+        'password',
+    ]
+
+@admin.register(Subscribe)
+class SubscribeAdmin(admin.ModelAdmin):
+
+    list_display = ['author','subscriber']
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
 
-    filter_horizontal = ['tags']
+    list_display = [
+        'name',
+        'author',
+        'cooking_time',
+        'text',
+    ]
+    filter_horizontal = ['tags', 'ingredients']
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+
+    list_display = ['name', 'slug']
+
+
+@admin.register(Ingredient)
+class IngedientAdmin(admin.ModelAdmin):
+
+    list_display = ['name', 'measurement_unit']
 
 
 @admin.register(FavoriteRecipes)
