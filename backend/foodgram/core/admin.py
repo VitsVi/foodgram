@@ -1,12 +1,7 @@
+from core.models import Subscribe, User
 from django.contrib import admin
-from recipe.models import (
-    FavoriteRecipes,
-    Recipe,
-    ShoppingList,
-    Ingredient,
-    Tag
-)
-from core.models import User, Subscribe
+from recipe.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingList,
+                           Tag)
 
 
 @admin.register(User)
@@ -22,10 +17,11 @@ class UserAdmin(admin.ModelAdmin):
         'password',
     ]
 
+
 @admin.register(Subscribe)
 class SubscribeAdmin(admin.ModelAdmin):
 
-    list_display = ['author','subscriber']
+    list_display = ['author', 'subscriber']
 
 
 @admin.register(Recipe)
