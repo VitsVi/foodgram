@@ -1,6 +1,8 @@
 import json
+
 from django.core.management.base import BaseCommand
 from recipe.models import Ingredient
+
 
 class Command(BaseCommand):
     help = "Load ingredients data from JSON file"
