@@ -71,7 +71,7 @@ python manage.py collectstatic --no-input
 ```
 ### Заполните базу тестовыми данными: 
 ```bash
-python manage.py add_ingidients_data 
+python manage.py add_ing_tag_data
 ```
 
 
@@ -128,7 +128,7 @@ docker-compose exec backend python manage.py collectstatic --no-input
 
 ### Заполните базу тестовыми данными:
 ```bash
-docker-compose exec backend python manage.py add_ingredients_data   
+docker-compose exec backend python manage.py add_ing_tag_data 
 ```
 
 

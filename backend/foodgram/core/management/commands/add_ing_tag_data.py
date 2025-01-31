@@ -1,7 +1,7 @@
 import json
 
 from django.core.management.base import BaseCommand
-from recipe.models import Ingredient
+from recipe.models import Ingredient, Tag
 
 
 class Command(BaseCommand):
@@ -20,4 +20,9 @@ class Command(BaseCommand):
         ]
 
         Ingredient.objects.bulk_create(ingredients, ignore_conflicts=True)
+
+        Tag.objects.create(name="Завтрак", slug='morning')
+        Tag.objects.create(name="Обед", slug='lunch')
+        Tag.objects.create(name="Ужин", slug='evening')
+        print(f"Создано тегов: {Tag.objects.count()}")
         self.stdout.write(self.style.SUCCESS("Ингредиенты успешно загружены."))
