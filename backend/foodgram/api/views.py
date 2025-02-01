@@ -88,22 +88,15 @@ class ProfileAvatarViewset(viewsets.GenericViewSet):
 
     def update(self, request, *args, **kwargs):
         """Обновление аватара пользователя."""
-        # if not request.data:
-        #     return Response(
-        #         {"avatar": "can't be empty."},
-        #         status=status.HTTP_400_BAD_REQUEST,
-        #     )
+        if not request.data:
+            return Response(
+                {"avatar": "can't be empty."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        # User.objects.filter(
-        #     id=self.request.user.id
-        # ).update(avatar=request.data["avatar"])
-        serializer = self.get_serializer(
-            instance=request.user,
-            data=request.data,
-            partial=True
-        )
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
+        User.objects.filter(
+            id=self.request.user.id
+        ).update(avatar=request.data["avatar"])
         return Response(
             {"avatar": "Аватар успешно обновлен"},
             status=status.HTTP_200_OK
