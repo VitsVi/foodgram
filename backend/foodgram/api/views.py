@@ -97,7 +97,11 @@ class ProfileAvatarViewset(viewsets.GenericViewSet):
         # User.objects.filter(
         #     id=self.request.user.id
         # ).update(avatar=request.data["avatar"])
-        serializer = self.get_serializer(instance=request.user, data=request.data, partial=True)
+        serializer = self.get_serializer(
+            instance=request.user,
+            data=request.data,
+            partial=True
+        )
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
