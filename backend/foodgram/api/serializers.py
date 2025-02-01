@@ -2,12 +2,11 @@ import base64
 
 from core.models import Subscribe
 from django.contrib.auth import get_user_model
+from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator, validate_email
-from drf_extra_fields.fields import Base64ImageField
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 from rest_framework import serializers
-from django.core.files.base import ContentFile
 
 User = get_user_model()
 
