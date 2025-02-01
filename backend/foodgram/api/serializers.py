@@ -1,3 +1,5 @@
+import base64
+
 from core.models import Subscribe
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator, validate_email
@@ -5,6 +7,7 @@ from drf_extra_fields.fields import Base64ImageField
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 from rest_framework import serializers
+from django.core.files.base import ContentFile
 
 User = get_user_model()
 
@@ -78,7 +81,7 @@ class UserProfileSerializer(
             })
         if User.objects.filter(email=user_email).exists():
             raise serializers.ValidationError({
-                'email': ['Введнный адрес уже занят.']
+                'email': ['Введенный адрес уже занят.']
             })
         return data
 
@@ -142,6 +145,24 @@ class ChangeProfilePasswordSerializer(serializers.ModelSerializer):
             password=validated_data['new_password']
         )
         return super().create(validated_data)
+
+
+class Base64ImageField(serializers.ImageField):
+    """Кастомное поле для кодирования изображения в base64."""
+
+    def to_internal_value(self, data):
+        """Метод преобразования картинки"""
+
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            if ext not in ["jpeg", "jpg", "png"]:
+                raise serializers.ValidationError(
+                    "Неподдерживаемый формат изображения."
+                )
+            data = ContentFile(base64.b64decode(imgstr), name='photo.' + ext)
+
+        return super().to_internal_value(data)
 
 
 class ProfleAvatarSerializer(serializers.ModelSerializer):
