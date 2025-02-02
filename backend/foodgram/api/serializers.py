@@ -155,7 +155,7 @@ class Base64ImageField(serializers.ImageField):
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
             ext = format.split('/')[-1]
-            if ext not in ["jpg", "png"]:
+            if ext not in ["jpeg", "jpg", "png"]:
                 raise serializers.ValidationError(
                     "Неподдерживаемый формат изображения."
                 )
