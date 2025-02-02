@@ -8,14 +8,29 @@ from recipe.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingList,
 class UserAdmin(admin.ModelAdmin):
     """Админка пользователей."""
 
-    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_superuser')
+    list_display = (
+        'id',
+        'username',
+        'email',
+        'first_name',
+        'last_name',
+        'is_superuser'
+    )
     list_filter = ('is_superuser', 'is_staff', 'is_active')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('id',)
     fieldsets = (
         ("Основная информация", {"fields": ('username', 'email')}),
-        ("Персональные данные", {"fields": ('first_name', 'last_name', 'avatar')}),
-        ("Права доступа", {"fields": ('is_active', 'is_staff', 'is_superuser')}),
+        ("Персональные данные", {"fields": (
+            'first_name',
+            'last_name',
+            'avatar'
+        )}),
+        ("Права доступа", {"fields": (
+            'is_active',
+            'is_staff',
+            'is_superuser'
+        )}),
     )
 
 
@@ -32,7 +47,13 @@ class SubscribeAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     """Админка рецептов."""
 
-    list_display = ('id', 'name', 'author', 'cooking_time', 'favorites_count')
+    list_display = (
+        'id',
+        'name',
+        'author',
+        'cooking_time',
+        'favorites_count'
+    )
     list_filter = ('author', 'tags')
     search_fields = ('name', 'author__username')
     filter_horizontal = ('tags', 'ingredients')
@@ -85,4 +106,3 @@ class ShoppingListAdmin(admin.ModelAdmin):
         """Подсчет количества рецептов в списке покупок."""
         return obj.recipes.count()
     recipes_count.short_description = "Количество рецептов"
-
