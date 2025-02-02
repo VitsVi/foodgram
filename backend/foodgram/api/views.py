@@ -1,3 +1,4 @@
+import os
 from core.models import Subscribe
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
@@ -88,26 +89,30 @@ class ProfileAvatarViewset(viewsets.GenericViewSet):
 
     def update(self, request, *args, **kwargs):
         """Обновление аватара пользователя."""
-        if not request.data:
-            return Response(
-                {"avatar": "can't be empty."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        user = request.user
+        old_avatar = user.avatar.path if user.avatar else None
 
-        User.objects.filter(
-            id=self.request.user.id
-        ).update(avatar=request.data["avatar"])
+        serializer = self.get_serializer(
+            instance=request.user,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        if old_avatar and os.path.exists(old_avatar):
+            if old_avatar != user.avatar.path:
+                os.remove(old_avatar)
+
         return Response(
-            {"avatar": "Аватар успешно обновлен"},
+            {"avatar": serializer.instance.avatar.url},
             status=status.HTTP_200_OK
         )
 
     def destroy(self, request, *args, **kwargs):
         """Удаление аватара пользователя."""
-        User.objects.filter(id=self.request.user.id).update(avatar=None)
-        return Response(
-            status=status.HTTP_204_NO_CONTENT
-        )
+        request.user.avatar.delete(save=True)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class TagViewset(viewsets.ModelViewSet):

@@ -150,8 +150,7 @@ class Base64ImageField(serializers.ImageField):
     """Кастомное поле для кодирования изображения в base64."""
 
     def to_internal_value(self, data):
-        """Метод преобразования картинки"""
-
+        """Метод преобразования картинки."""
         if isinstance(data, str) and data.startswith('data:image'):
             format, imgstr = data.split(';base64,')
             ext = format.split('/')[-1]

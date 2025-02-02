@@ -7,6 +7,7 @@ class User(AbstractUser):
 
     avatar = models.ImageField(
         verbose_name='Фото профиля',
+        upload_to='users/',
         null=True,
     )
 
