@@ -31,7 +31,7 @@ class RecipeFilter(django_filters.FilterSet):
         for tag_slug in tag_slugs:
             query |= Q(tags__slug=tag_slug)
 
-        return queryset.filter(query)
+        return queryset.filter(query).distinct()
 
     def filter_is_in_shopping_cart(self, queryset, name, value):
         """Фильтрация по полю is_in_shopping_cart."""
