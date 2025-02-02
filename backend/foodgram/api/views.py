@@ -11,6 +11,7 @@ from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -142,6 +143,7 @@ class RecipeViewset(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    pagination_class = PageNumberPagination
 
     def get_permissions(self):
         """Права доступа для рецептов."""
