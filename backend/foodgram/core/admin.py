@@ -6,57 +6,83 @@ from recipe.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingList,
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
+    """Админка пользователей."""
 
-    list_display = [
-        'username',
-        'first_name',
-        'last_name',
-        'avatar',
-        'email',
-        'is_superuser',
-        'password',
-    ]
+    list_display = ('id', 'username', 'email', 'first_name', 'last_name', 'is_superuser')
+    list_filter = ('is_superuser', 'is_staff', 'is_active')
+    search_fields = ('username', 'email', 'first_name', 'last_name')
+    ordering = ('id',)
+    fieldsets = (
+        ("Основная информация", {"fields": ('username', 'email')}),
+        ("Персональные данные", {"fields": ('first_name', 'last_name', 'avatar')}),
+        ("Права доступа", {"fields": ('is_active', 'is_staff', 'is_superuser')}),
+    )
 
 
 @admin.register(Subscribe)
 class SubscribeAdmin(admin.ModelAdmin):
+    """Админка подписок."""
 
-    list_display = ['author', 'subscriber']
+    list_display = ('id', 'subscriber', 'author')
+    list_filter = ('author',)
+    search_fields = ('subscriber__username', 'author__username')
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
+    """Админка рецептов."""
 
-    list_display = [
-        'name',
-        'author',
-        'cooking_time',
-        'text',
-    ]
-    filter_horizontal = ['tags', 'ingredients']
+    list_display = ('id', 'name', 'author', 'cooking_time', 'favorites_count')
+    list_filter = ('author', 'tags')
+    search_fields = ('name', 'author__username')
+    filter_horizontal = ('tags', 'ingredients')
+    ordering = ('id',)
+
+    def favorites_count(self, obj):
+        """Подсчет количества добавлений рецепта в избранное."""
+        return obj.favoriterecipes_set.count()
+    favorites_count.short_description = "В избранном"
 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
+    """Админка тегов."""
 
-    list_display = ['name', 'slug']
+    list_display = ('id', 'name', 'slug')
+    search_fields = ('name', 'slug')
 
 
 @admin.register(Ingredient)
-class IngedientAdmin(admin.ModelAdmin):
+class IngredientAdmin(admin.ModelAdmin):
+    """Админка ингредиентов."""
 
-    list_display = ['name', 'measurement_unit']
+    list_display = ('id', 'name', 'measurement_unit')
+    search_fields = ('name',)
+    list_filter = ('measurement_unit',)
 
 
 @admin.register(FavoriteRecipes)
 class FavoriteRecipesAdmin(admin.ModelAdmin):
+    """Админка избранных рецептов."""
 
-    list_display = ['user']
-    filter_horizontal = ['recipes']
+    list_display = ('id', 'user', 'recipes_count')
+    filter_horizontal = ('recipes',)
+
+    def recipes_count(self, obj):
+        """Подсчет количества рецептов в избранном."""
+        return obj.recipes.count()
+    recipes_count.short_description = "Количество рецептов"
 
 
 @admin.register(ShoppingList)
 class ShoppingListAdmin(admin.ModelAdmin):
+    """Админка списка покупок."""
 
-    list_display = ['user']
-    filter_horizontal = ['recipes']
+    list_display = ('id', 'user', 'recipes_count')
+    filter_horizontal = ('recipes',)
+
+    def recipes_count(self, obj):
+        """Подсчет количества рецептов в списке покупок."""
+        return obj.recipes.count()
+    recipes_count.short_description = "Количество рецептов"
+
