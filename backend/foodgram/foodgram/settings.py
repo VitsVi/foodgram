@@ -121,7 +121,7 @@ REST_FRAMEWORK = {
     ],
     'SEARCH_PARAM': 'name',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 6
 }
 
 DJOSER = {
