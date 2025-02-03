@@ -5,6 +5,7 @@ from core.models import Subscribe
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator, validate_email
+from django.db.models import Count
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 from rest_framework import serializers
@@ -484,7 +485,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, instance):
         """Подсчет количества рецептов автора."""
-        return Recipe.objects.filter(author=instance.author).count()
+        return Recipe.objects.filter(author=instance.author).aggregate(
+            total_recipes=Count('id')
+        )['total_recipes']
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
