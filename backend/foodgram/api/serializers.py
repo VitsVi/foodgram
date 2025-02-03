@@ -13,7 +13,7 @@ User = get_user_model()
 
 MAX_LENGTH = 150
 EMAIL_MAX_LENGTH = 254
-AMOUNT_MIN = 1
+AMOUNT_MIN = 0
 
 
 class UserRequiredFieldsSerializerMixin(serializers.ModelSerializer):
@@ -272,12 +272,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         ids = []
         for item in value:
             id = item.get("id")
-            amount = item.get('amount')
+            amount = int(item.get('amount'))
             if not Ingredient.objects.filter(id=id).exists():
                 raise serializers.ValidationError(
                     {"ingredients": f"Ингредиента с id {id} не существует."}
                 )
-            if amount is None or amount <= 0:
+            if amount <= AMOUNT_MIN or amount is None:
                 raise serializers.ValidationError(
                     {"ingredients": (
                         f"""Количество ингредиента
@@ -486,12 +486,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
         """Подсчет количества рецептов автора."""
         return Recipe.objects.filter(author=instance.author).count()
 
-    # def to_representation(self, instance):
-    #     data = super().to_representation(instance)
-    #     recipes = Recipe.objects.filter(id=instance.author.id)
-    #     data['recipes'] = RecipeSerializer(recipes, many=True).data
-    #     return data
-    def get_recipes(self, instance):
-        """Получение списка рецептов автора."""
-        recipes = Recipe.objects.filter(author=instance.author)
-        return RecipeSerializer(recipes, many=True).data
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        recipes = Recipe.objects.filter(id=instance.author.id)
+        data['recipes'] = RecipeSerializer(recipes, many=True).data
+        return data
+    # def get_recipes(self, instance):
+    #     """Получение списка рецептов автора."""
+    #     recipes = Recipe.objects.filter(author=instance.author)
+    #     return RecipeSerializer(recipes, many=True).data
