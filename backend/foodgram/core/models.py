@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
@@ -40,6 +41,16 @@ class Subscribe(models.Model):
         unique_together = ('subscriber', 'author')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+    # new
+    def clean(self):
+        """Запрещаем подписку на самого себя."""
+        if self.subscriber == self.author:
+            raise ValidationError("Нельзя подписаться на самого себя.")
+
+    def save(self, *args, **kwargs):
+        """Вызываем валидацию перед сохранением."""
+        self.clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.subscriber} подписан на {self.author}"

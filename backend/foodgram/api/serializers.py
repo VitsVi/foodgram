@@ -277,11 +277,11 @@ class RecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     {"ingredients": f"Ингредиента с id {id} не существует."}
                 )
-            if amount < AMOUNT_MIN:
+            if amount is None or amount <= 0:
                 raise serializers.ValidationError(
                     {"ingredients": (
                         f"""Количество ингредиента
-                         не может быть меньше {AMOUNT_MIN}"""
+                         должно быть больше {AMOUNT_MIN}"""
                     )}
                 )
             if id in ids:
@@ -486,8 +486,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
         """Подсчет количества рецептов автора."""
         return Recipe.objects.filter(author=instance.author).count()
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        recipes = Recipe.objects.filter(id=instance.author.id)
-        data['recipes'] = RecipeSerializer(recipes, many=True).data
-        return data
+    # def to_representation(self, instance):
+    #     data = super().to_representation(instance)
+    #     recipes = Recipe.objects.filter(id=instance.author.id)
+    #     data['recipes'] = RecipeSerializer(recipes, many=True).data
+    #     return data
+    def get_recipes(self, instance):
+        """Получение списка рецептов автора."""
+        recipes = Recipe.objects.filter(author=instance.author)
+        return RecipeSerializer(recipes, many=True).data
