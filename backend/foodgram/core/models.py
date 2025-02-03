@@ -41,6 +41,7 @@ class Subscribe(models.Model):
         unique_together = ('subscriber', 'author')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
+
     # new
     def clean(self):
         """Запрещаем подписку на самого себя."""
