@@ -15,7 +15,7 @@ from rest_framework.pagination import (LimitOffsetPagination,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from django.http import HttpResponse
 from .filters import RecipeFilter
 from .permissions import IfMeAuthenticated, IsAuthor
 from .serializers import (IngredientSerializer, ProfleAvatarSerializer,
@@ -237,7 +237,7 @@ class RecipeViewset(viewsets.ModelViewSet):
                 f"{ingredient['ingredient__name']}  - "
                 f"{ingredient['sum']}"
                 f"({ingredient['ingredient__measurement_unit']})"
-                f"{os.linesep}"
+                "\n"
             )
         return shopping_list
     # @staticmethod
@@ -259,7 +259,7 @@ class RecipeViewset(viewsets.ModelViewSet):
             'ingredient__measurement_unit'
         ).annotate(sum=Sum('amount'))
         shopping_list = self.ingredients_to_txt(ingredients)
-        return Response(shopping_list, content_type='text/plain')
+        return HttpResponse(shopping_list, content_type='text/plain')
 
     @action(detail=True, methods=['post', 'delete'], url_path='favorite')
     def add_or_remove_favorite(self, request, pk=None):
