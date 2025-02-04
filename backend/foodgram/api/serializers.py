@@ -272,23 +272,21 @@ class RecipeSerializer(serializers.ModelSerializer):
             amount = int(item.get('amount'))
             if not Ingredient.objects.filter(id=id).exists():
                 raise serializers.ValidationError(
-                    {"ingredients": [
-                        {"id": f"Ингредиента с id {id} не существует."}
-                    ]}
+                    [{"id": f"Ингредиента с id {id} не существует."}]
                 )
             if amount <= AMOUNT_MIN or amount is None:
                 raise serializers.ValidationError(
-                    {"ingredients": {"amount": ("Количество должно "
-                                                "быть больше 0.")}}
+                    [{"amount": (
+                        "Количество должно "
+                        "быть больше 0."
+                    )}]
                 )
             if id in ids:
                 raise serializers.ValidationError(
-                    {"ingredients": [
-                        {"id": (
-                            "Поле не может содержать"
-                            "повторяющиеся id ингредиентов."
-                        )}
-                    ]}
+                    [{"id": (
+                        "Поле не может содержать"
+                        "повторяющиеся id ингредиентов."
+                    )}]
                 )
             ids.append(id)
         ids = []
