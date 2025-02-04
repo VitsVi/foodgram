@@ -205,14 +205,20 @@ class IngredientInputSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ['id', 'amount']
 
-    def validate_amount(self, value):
-
-        amount = value
-        if amount <= AMOUNT_MIN:
+    def validate(self, data):
+        amount = data.get('amount')
+        id = data.get('id')
+        if not Ingredient.objects.filter(id=id).exists():
             raise serializers.ValidationError(
-                "Количество должно быть больше 0."
+                {
+                    "id": f"Ингредиента с id {id} не существует."
+                }
             )
-        return value
+        if amount <= AMOUNT_MIN or amount is None:
+            raise serializers.ValidationError({
+                "amount": f"Количество должно быть больше {AMOUNT_MIN}."
+            })
+        return data
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -282,20 +288,20 @@ class RecipeSerializer(serializers.ModelSerializer):
         ids = []
         for item in value:
             id = item.get("id")
-            amount = int(item.get('amount'))
-            if not Ingredient.objects.filter(id=id).exists():
-                raise serializers.ValidationError(
-                    {"ingredients": [
-                        {"id": f"Ингредиента с id {id} не существует."}
-                    ]}
-                )
-            if amount <= AMOUNT_MIN or amount is None:
-                raise serializers.ValidationError(
-                    {"ingredients": [
-                        {"amount": f"""Количество должно 
-                         быть больше {AMOUNT_MIN}."""}
-                    ]}
-                )
+            # amount = int(item.get('amount'))
+            # if not Ingredient.objects.filter(id=id).exists():
+            #     raise serializers.ValidationError(
+            #         {"ingredients": [
+            #             {"id": f"Ингредиента с id {id} не существует."}
+            #         ]}
+            #     )
+            # if amount <= AMOUNT_MIN or amount is None:
+            #     raise serializers.ValidationError(
+            #         {"ingredients": [
+            #             {"amount": f"""Количество должно 
+            #              быть больше {AMOUNT_MIN}."""}
+            #         ]}
+            #     )
             if id in ids:
                 raise serializers.ValidationError(
                     {"ingredients": [{"id": """Поле не может содержать 
