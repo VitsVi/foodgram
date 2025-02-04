@@ -199,7 +199,7 @@ class IngredientInputSerializer(serializers.ModelSerializer):
     """Сериализатор для входных данных ингредиентов."""
 
     id = serializers.IntegerField()
-    amount = serializers.IntegerField()
+    amount = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = IngredientRecipe
