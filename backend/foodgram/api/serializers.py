@@ -199,21 +199,11 @@ class IngredientInputSerializer(serializers.ModelSerializer):
     """Сериализатор для входных данных ингредиентов."""
 
     id = serializers.IntegerField()
-    amount = serializers.IntegerField(min_value=1)
+    amount = serializers.IntegerField()
 
     class Meta:
         model = IngredientRecipe
         fields = ['id', 'amount']
-
-    @staticmethod
-    def validate_amount(value):
-        """Метод валидации количества"""
-
-        if value <= AMOUNT_MIN:
-            raise serializers.ValidationError(
-                'Количество ингредиента должно быть больше 0!'
-            )
-        return value
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -288,15 +278,17 @@ class RecipeSerializer(serializers.ModelSerializer):
                 )
             if amount <= AMOUNT_MIN or amount is None:
                 raise serializers.ValidationError(
-                    {"ingredients": [
-                        {"amount": f"""Количество должно
-                          быть больше {AMOUNT_MIN}."""}
-                    ]}
+                    {"ingredients": {"amount": ("Количество должно "
+                                                "быть больше 0.")}}
                 )
             if id in ids:
                 raise serializers.ValidationError(
-                    {"ingredients": [{"id": """Поле не может содержать
-                                       повторяющиеся id ингредиентов."""}]}
+                    {"ingredients": [
+                        {"id": (
+                            "Поле не может содержать"
+                            "повторяющиеся id ингредиентов."
+                        )}
+                    ]}
                 )
             ids.append(id)
         ids = []
