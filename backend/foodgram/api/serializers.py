@@ -494,23 +494,12 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
         return data
 
-    # def get_recipes_count(self, instance):
-    #     """Подсчет количества рецептов автора."""
-    #     return Recipe.objects.filter(author=instance.author).aggregate(
-    #         total_recipes=Count('id')
-    #     )['total_recipes']
     def get_recipes_count(self, instance):
         """Метод для получения количества рецептов"""
-        print('РЕЦЕПТЫ РЕЦЕПТЫ РЕЦЕПТЫ РЕЦЕПТЫ ')
-        print(Recipe.objects.filter(author=instance.author).count())
         return Recipe.objects.filter(author=instance.author).count()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        recipes = Recipe.objects.filter(id=instance.author.id)
+        recipes = Recipe.objects.filter(author=instance.author)[:3]
         data['recipes'] = RecipeSerializer(recipes, many=True).data
         return data
-    # def get_recipes(self, instance):
-    #     """Получение списка рецептов автора."""
-    #     recipes = Recipe.objects.filter(author=instance.author)
-    #     return RecipeSerializer(recipes, many=True).data

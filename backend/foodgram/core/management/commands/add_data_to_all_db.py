@@ -85,7 +85,7 @@ class Command(BaseCommand):
                     "cooking_time": 15,
                 },
                 {
-                    "author": user_objects[1],
+                    "author": user_objects[0],
                     "name": "Картофельное пюре",
                     "image": "path/to/mashed_potatoes.jpg",
                     "text": "Идеальное картофельное пюре.",
@@ -94,7 +94,43 @@ class Command(BaseCommand):
                     "cooking_time": 10,
                 },
                 {
-                    "author": user_objects[2],
+                    "author": user_objects[0],
+                    "name": "Суп из моркови",
+                    "image": "path/to/carrot_soup.jpg",
+                    "text": "Полезный суп из моркови.",
+                    "ingredients": [("Морковь", 300)],
+                    "tags": [tags[2]],
+                    "cooking_time": 5,
+                },
+                {
+                    "author": user_objects[0],
+                    "name": "Суп из моркови",
+                    "image": "path/to/carrot_soup.jpg",
+                    "text": "Полезный суп из моркови.",
+                    "ingredients": [("Морковь", 300)],
+                    "tags": [tags[2]],
+                    "cooking_time": 5,
+                },
+                {
+                    "author": user_objects[0],
+                    "name": "Суп из моркови",
+                    "image": "path/to/carrot_soup.jpg",
+                    "text": "Полезный суп из моркови.",
+                    "ingredients": [("Морковь", 300)],
+                    "tags": [tags[2]],
+                    "cooking_time": 5,
+                },
+                {
+                    "author": user_objects[0],
+                    "name": "Суп из моркови",
+                    "image": "path/to/carrot_soup.jpg",
+                    "text": "Полезный суп из моркови.",
+                    "ingredients": [("Морковь", 300)],
+                    "tags": [tags[2]],
+                    "cooking_time": 5,
+                },
+                {
+                    "author": user_objects[0],
                     "name": "Суп из моркови",
                     "image": "path/to/carrot_soup.jpg",
                     "text": "Полезный суп из моркови.",
@@ -132,8 +168,8 @@ class Command(BaseCommand):
                 if user1 != user2:
                     try:
                         Subscribe.objects.create(
-                            subscriber=user1,
-                            author=user2
+                            subscriber=user2,
+                            author=user1
                         )
                     except Exception as e:
                         print('ОШИБКА ПОДПИСОК', e)
