@@ -502,7 +502,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
     def get_recipes_count(self, instance):
         """Метод для получения количества рецептов"""
 
-        return Recipe.objects.filter(id=instance.author.id).count()
+        return Recipe.objects.filter(author=instance.author).count()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
