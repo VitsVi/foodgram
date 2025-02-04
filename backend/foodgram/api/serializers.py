@@ -205,21 +205,6 @@ class IngredientInputSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ['id', 'amount']
 
-    def validate(self, data):
-        amount = data.get('amount')
-        id = data.get('id')
-        if not Ingredient.objects.filter(id=id).exists():
-            raise serializers.ValidationError(
-                {
-                    "id": f"Ингредиента с id {id} не существует."
-                }
-            )
-        if amount <= AMOUNT_MIN or amount is None:
-            raise serializers.ValidationError({
-                "amount": f"Количество должно быть больше {AMOUNT_MIN}."
-            })
-        return data
-
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериалайзер для модели Ингредиентов."""
@@ -281,31 +266,27 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def validate_ingredients(self, value):
         """Проверка получаемых данных в поле ингедиентов."""
-        if not value:
-            raise serializers.ValidationError(
-                {"ingredients": "Поле не может быть пустым."}
-            )
         ids = []
         for item in value:
             id = item.get("id")
-            # amount = int(item.get('amount'))
-            # if not Ingredient.objects.filter(id=id).exists():
-            #     raise serializers.ValidationError(
-            #         {"ingredients": [
-            #             {"id": f"Ингредиента с id {id} не существует."}
-            #         ]}
-            #     )
-            # if amount <= AMOUNT_MIN or amount is None:
-            #     raise serializers.ValidationError(
-            #         {"ingredients": [
-            #             {"amount": f"""Количество должно 
-            #              быть больше {AMOUNT_MIN}."""}
-            #         ]}
-            #     )
+            amount = int(item.get('amount'))
+            if not Ingredient.objects.filter(id=id).exists():
+                raise serializers.ValidationError(
+                    {"ingredients": [
+                        {"id": f"Ингредиента с id {id} не существует."}
+                    ]}
+                )
+            if amount <= AMOUNT_MIN or amount is None:
+                raise serializers.ValidationError(
+                    {"ingredients": [
+                        {"amount": f"""Количество должно
+                          быть больше {AMOUNT_MIN}."""}
+                    ]}
+                )
             if id in ids:
                 raise serializers.ValidationError(
-                    {"ingredients": [{"id": """Поле не может содержать 
-                                      повторяющиеся id ингредиентов."""}]}
+                    {"ingredients": [{"id": """Поле не может содержать
+                                       повторяющиеся id ингредиентов."""}]}
                 )
             ids.append(id)
         ids = []
@@ -501,7 +482,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
         return data
 
     def get_recipes_count(self, instance):
-        """Метод для получения количества рецептов"""
+        """Метод для получения количества рецептов."""
         return Recipe.objects.filter(author=instance.author).count()
 
     def to_representation(self, instance):

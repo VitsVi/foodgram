@@ -39,46 +39,46 @@ const RecipeCreate = ({ onEdit }) => {
   const [submitError, setSubmitError] = useState({ submitError: "" });
   const [ingredientError, setIngredientError] = useState("");
 
-  const handleAddIngredient = () => {
-    if (
-      ingredientValue.amount !== "" &&
-      !/^\d+$/.test(ingredientValue.amount)
-    ) {
-      return setIngredientError("Количество ингредиента должно быть целым числом");
-    }
-
-    if (
-      ingredientValue.amount === "" ||
-      ingredientValue.name === "" ||
-      !ingredientValue.id
-    ) {
-      return setIngredientError("Ингредиент не выбран");
-    }
-
-    if (recipeIngredients.find(({ name }) => name === ingredientValue.name)) {
-      return setIngredientError("Ингредиент уже выбран");
-    }
-
-    setRecipeIngredients([...recipeIngredients, ingredientValue]);
-    setIngredientValue({
-      name: "",
-      id: null,
-      amount: "",
-      measurement_unit: "",
-    });
-  };
-
-  useEffect(
-    (_) => {
-      if (ingredientValue.name === "") {
-        return setIngredients([]);
+    const handleAddIngredient = () => {
+      if (
+        ingredientValue.amount !== "" &&
+        !/^\d+$/.test(ingredientValue.amount)
+      ) {
+        return setIngredientError("Количество ингредиента должно быть целым числом");
       }
-      api.getIngredients({ name: ingredientValue.name }).then((ingredients) => {
-        setIngredients(ingredients);
+
+      if (
+        ingredientValue.amount === "" ||
+        ingredientValue.name === "" ||
+        !ingredientValue.id
+      ) {
+        return setIngredientError("Ингредиент не выбран");
+      }
+
+      if (recipeIngredients.find(({ name }) => name === ingredientValue.name)) {
+        return setIngredientError("Ингредиент уже выбран");
+      }
+
+      setRecipeIngredients([...recipeIngredients, ingredientValue]);
+      setIngredientValue({
+        name: "",
+        id: null,
+        amount: "",
+        measurement_unit: "",
       });
-    },
-    [ingredientValue.name]
-  );
+    };
+
+    useEffect(
+      (_) => {
+        if (ingredientValue.name === "") {
+          return setIngredients([]);
+        }
+        api.getIngredients({ name: ingredientValue.name }).then((ingredients) => {
+          setIngredients(ingredients);
+        });
+      },
+      [ingredientValue.name]
+    );
 
   useEffect((_) => {
     api.getTags().then((tags) => {
