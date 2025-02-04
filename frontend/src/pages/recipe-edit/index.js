@@ -53,6 +53,9 @@ const RecipeEdit = ({ onItemDelete }) => {
     ) {
       return setIngredientError("Ингредиент не выбран");
     }
+    if (ingredientValue.amount <= 0) {
+      return setIngredientError("Количество ингредиента должно быть больше 0");
+    }
 
     if (recipeIngredients.find(({ name }) => name === ingredientValue.name)) {
       return setIngredientError("Ингредиент уже выбран");
