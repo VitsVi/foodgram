@@ -205,6 +205,15 @@ class IngredientInputSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ['id', 'amount']
 
+    def validate(self, data):
+
+        amount = data.get('amount')
+        if amount <= AMOUNT_MIN:
+            raise serializers.ValidationError(
+                {"Количество должно быть больше 0."}
+            )
+        return data
+
 
 class IngredientSerializer(serializers.ModelSerializer):
     """Сериалайзер для модели Ингредиентов."""
