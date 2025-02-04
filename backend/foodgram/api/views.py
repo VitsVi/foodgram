@@ -241,14 +241,6 @@ class RecipeViewset(viewsets.ModelViewSet):
                 "\n"
             )
         return shopping_list
-    # @staticmethod
-    # def ingredients_to_txt(ingredients):
-    #     """Метод для объединения ингредиентов в список для загрузки."""
-    #     return "\n".join(
-    #         f"{ingredient['ingredient__name']} - {ingredient['sum']} "
-    #         f"({ingredient['ingredient__measurement_unit']})"
-    #         for ingredient in ingredients
-    #     )
 
     @action(detail=False, methods=['get'], url_path='download_shopping_cart')
     def download_shopping_cart(self, request):
