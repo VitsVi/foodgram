@@ -58,13 +58,7 @@ const RecipeCreate = ({ onEdit }) => {
       if (recipeIngredients.find(({ name }) => name === ingredientValue.name)) {
         return setIngredientError("Ингредиент уже выбран");
       }
-      // проверка введенного числа
-      if (ingredientValue.amount === "0") {
-        return setIngredientError("Количество ингредиента должно быть больше 0");
-      }
-      if (ingredientValue.amount === 0) {
-        return setIngredientError("Количество ингредиента должно быть больше 0");
-      }
+
       setRecipeIngredients([...recipeIngredients, ingredientValue]);
       setIngredientValue({
         name: "",
