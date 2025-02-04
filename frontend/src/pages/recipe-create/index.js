@@ -40,7 +40,6 @@ const RecipeCreate = ({ onEdit }) => {
   const [ingredientError, setIngredientError] = useState("");
 
     const handleAddIngredient = () => {
-      const amount = parseInt(ingredientValue.amount, 10); // Явно преобразуем в число
       if (
         ingredientValue.amount !== "" &&
         !/^\d+$/.test(ingredientValue.amount)
@@ -60,10 +59,12 @@ const RecipeCreate = ({ onEdit }) => {
         return setIngredientError("Ингредиент уже выбран");
       }
       // проверка введенного числа
-      if (isNaN(amount) || amount <= 0) {
+      if (ingredientValue.amount === "0") {
         return setIngredientError("Количество ингредиента должно быть больше 0");
       }
-
+      if (ingredientValue.amount === 0) {
+        return setIngredientError("Количество ингредиента должно быть больше 0");
+      }
       setRecipeIngredients([...recipeIngredients, ingredientValue]);
       setIngredientValue({
         name: "",

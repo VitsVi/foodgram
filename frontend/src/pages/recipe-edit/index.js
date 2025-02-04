@@ -46,7 +46,6 @@ const RecipeEdit = ({ onItemDelete }) => {
   const history = useHistory();
 
   const handleAddIngredient = () => {
-    const amount = parseInt(ingredientValue.amount, 10); // Явно преобразуем в число
     if (
       ingredientValue.amount === "" ||
       ingredientValue.name === "" ||
@@ -55,7 +54,10 @@ const RecipeEdit = ({ onItemDelete }) => {
       return setIngredientError("Ингредиент не выбран");
     }
     // проверка введенного числа
-    if (isNaN(amount) || amount <= 0) {
+    if (ingredientValue.amount === "0") {
+      return setIngredientError("Количество ингредиента должно быть больше 0");
+    }
+    if (ingredientValue.amount === 0) {
       return setIngredientError("Количество ингредиента должно быть больше 0");
     }
     if (recipeIngredients.find(({ name }) => name === ingredientValue.name)) {
