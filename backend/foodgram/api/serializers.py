@@ -205,14 +205,14 @@ class IngredientInputSerializer(serializers.ModelSerializer):
         model = IngredientRecipe
         fields = ['id', 'amount']
 
-    def validate(self, data):
+    def validate_amount(self, value):
 
-        amount = data.get('amount')
+        amount = value
         if amount <= AMOUNT_MIN:
             raise serializers.ValidationError(
-                {"Количество должно быть больше 0."}
+                "Количество должно быть больше 0."
             )
-        return data
+        return value
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -459,7 +459,9 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     author = UserProfileSerializer(read_only=True)
     recipes = RecipeSerializer(many=True, read_only=True)
-    recipes_count = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField(
+        read_only=True
+    )
 
     class Meta:
         model = Subscribe
@@ -492,11 +494,16 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
         return data
 
-    def get_recipes_count(self, instance):
-        """Подсчет количества рецептов автора."""
-        return Recipe.objects.filter(author=instance.author).aggregate(
-            total_recipes=Count('id')
-        )['total_recipes']
+    # def get_recipes_count(self, instance):
+    #     """Подсчет количества рецептов автора."""
+    #     return Recipe.objects.filter(author=instance.author).aggregate(
+    #         total_recipes=Count('id')
+    #     )['total_recipes']
+    @staticmethod
+    def get_recipes_count(obj):
+        """Метод для получения количества рецептов"""
+
+        return obj.recipes.count()
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
