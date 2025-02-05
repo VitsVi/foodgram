@@ -1,8 +1,10 @@
 from core.models import Subscribe, User
 from django.contrib import admin
 from recipe.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingList,
-                           Tag)
-
+                           Tag, IngredientRecipe)
+from django.core.exceptions import ValidationError
+from django.forms import BaseInlineFormSet
+from django.utils.safestring import mark_safe
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
@@ -43,6 +45,11 @@ class SubscribeAdmin(admin.ModelAdmin):
     search_fields = ('subscriber__username', 'author__username')
 
 
+class RecipeIngredientInline(admin.TabularInline):
+    model = IngredientRecipe
+    extra = 1
+
+
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """Админка рецептов."""
@@ -56,8 +63,9 @@ class RecipeAdmin(admin.ModelAdmin):
     )
     list_filter = ('author', 'tags')
     search_fields = ('name', 'author__username')
-    filter_horizontal = ('tags', 'ingredients')
+    filter_horizontal = ('tags',)
     ordering = ('id',)
+    inlines = [RecipeIngredientInline]
 
     def favorites_count(self, obj):
         """Подсчет количества добавлений рецепта в избранное."""
