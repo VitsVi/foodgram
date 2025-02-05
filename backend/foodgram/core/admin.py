@@ -2,9 +2,7 @@ from core.models import Subscribe, User
 from django.contrib import admin
 from recipe.models import (FavoriteRecipes, Ingredient, Recipe, ShoppingList,
                            Tag, IngredientRecipe)
-from django.core.exceptions import ValidationError
-from django.forms import BaseInlineFormSet
-from django.utils.safestring import mark_safe
+
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
