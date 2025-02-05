@@ -1,6 +1,7 @@
 from core.models import Subscribe, User
 from django.contrib import admin
 from django.core.exceptions import ValidationError
+from django.forms import BaseInlineFormSet
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 
@@ -44,9 +45,26 @@ class SubscribeAdmin(admin.ModelAdmin):
     search_fields = ('subscriber__username', 'author__username')
 
 
+class IngredientRecipeInlineFormset(BaseInlineFormSet):
+    """Форма для валидации ингредиентов в рецепте."""
+
+    def clean(self):
+        """Проверяем, что хотя бы один ингредиент добавлен."""
+        super().clean()
+        if not any(
+            form.cleaned_data and not form.cleaned_data.get(
+                "DELETE", False
+            ) for form in self.forms
+        ):
+            raise ValidationError(
+                "Рецепт должен содержать хотя бы один ингредиент."
+            )
+
+
 class RecipeIngredientInline(admin.TabularInline):
     model = IngredientRecipe
     extra = 1
+    formset = IngredientRecipeInlineFormset
 
 
 @admin.register(Recipe)
@@ -65,14 +83,6 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     ordering = ('id',)
     inlines = [RecipeIngredientInline]
-
-    def save_model(self, request, obj, form, change):
-        """Проверяет наличие хотя бы одного ингредиента перед сохранением."""
-        if not obj.ingredientrecipe_set.exists():
-            raise ValidationError(
-                "Рецепт должен содержать хотя бы один ингредиент."
-            )
-        super().save_model(request, obj, form, change)
 
     def favorites_count(self, obj):
         """Подсчет количества добавлений рецепта в избранное."""
