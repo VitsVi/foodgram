@@ -68,8 +68,10 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def save_model(self, request, obj, form, change):
         """Проверяет наличие хотя бы одного ингредиента перед сохранением."""
-        if not obj.ingredientrecipe_set.exists():  # Проверяем связанные ингредиенты
-            raise ValidationError("Рецепт должен содержать хотя бы один ингредиент.")
+        if not obj.ingredientrecipe_set.exists():
+            raise ValidationError(
+                "Рецепт должен содержать хотя бы один ингредиент."
+            )
         super().save_model(request, obj, form, change)
 
     def favorites_count(self, obj):
