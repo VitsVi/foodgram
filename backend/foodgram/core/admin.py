@@ -1,5 +1,6 @@
 from core.models import Subscribe, User
 from django.contrib import admin
+from django.core.exceptions import ValidationError
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 
@@ -64,6 +65,12 @@ class RecipeAdmin(admin.ModelAdmin):
     filter_horizontal = ('tags',)
     ordering = ('id',)
     inlines = [RecipeIngredientInline]
+
+    def save_model(self, request, obj, form, change):
+        """Проверяет наличие хотя бы одного ингредиента перед сохранением."""
+        if not obj.ingredientrecipe_set.exists():  # Проверяем связанные ингредиенты
+            raise ValidationError("Рецепт должен содержать хотя бы один ингредиент.")
+        super().save_model(request, obj, form, change)
 
     def favorites_count(self, obj):
         """Подсчет количества добавлений рецепта в избранное."""
