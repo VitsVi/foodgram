@@ -5,10 +5,11 @@ class IfMeAuthenticated(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if view.kwargs.get('pk') == 'me':
-            if request.user.is_authenticated:
-                return obj == request.user
-            else:
-                return False
+            return (
+                obj == request.user
+                if request.user.is_authenticated
+                else True
+            )
         return True
 
 
@@ -17,6 +18,16 @@ class IsAuthor(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Проверка прав на объект (рецепт)."""
-        if request.user == obj.author:
-            return True
-        return False
+        return True if request.user == obj.author else False
+
+
+class RecipePermission(BasePermission):
+    """Проверка доступов к рецептам."""
+
+    def has_permission(self, request, view):
+        return True if request.method == "GET" else \
+            IsAuthor().has_object_permission(
+                request, view, view.get_object()
+            ) \
+            if request.method in ['PATCH', 'PUT'] else \
+            (request.user and request.user.is_authenticated)

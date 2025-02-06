@@ -1,18 +1,14 @@
 import base64
 import uuid
 
-from core.models import Subscribe
-from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator, validate_email
-# from django.db.models import Count
+from core.models import Subscribe, User
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 from rest_framework import serializers
 
-User = get_user_model()
-
-MAX_LENGTH = 150
+CHARFIELD_MAX_LENGTH = 150
 EMAIL_MAX_LENGTH = 254
 AMOUNT_MIN = 0
 
@@ -21,7 +17,7 @@ class UserRequiredFieldsSerializerMixin(serializers.ModelSerializer):
     """Миксин для сериалайзеров с использованием модели юзера."""
 
     username = serializers.CharField(
-        max_length=MAX_LENGTH,
+        max_length=CHARFIELD_MAX_LENGTH,
         validators=[RegexValidator(
             regex=r'^[\w.@+-]+\Z',
             message=('Поле может содержать буквы, '
@@ -41,9 +37,15 @@ class UserProfileSerializer(
 ):
     """Сериалайзер для работы с запросами к страницам пользователей."""
 
-    first_name = serializers.CharField(max_length=MAX_LENGTH, required=True)
-    last_name = serializers.CharField(max_length=MAX_LENGTH, required=True)
-    password = serializers.CharField(max_length=MAX_LENGTH, required=True)
+    first_name = serializers.CharField(
+        max_length=CHARFIELD_MAX_LENGTH, required=True
+    )
+    last_name = serializers.CharField(
+        max_length=CHARFIELD_MAX_LENGTH, required=True
+    )
+    password = serializers.CharField(
+        max_length=CHARFIELD_MAX_LENGTH, required=True
+    )
     avatar = serializers.ImageField(required=False)
     is_subscribed = serializers.SerializerMethodField()
 
@@ -115,11 +117,11 @@ class ChangeProfilePasswordSerializer(serializers.ModelSerializer):
     """Смена пароля профиля."""
 
     new_password = serializers.CharField(
-        max_length=MAX_LENGTH,
+        max_length=CHARFIELD_MAX_LENGTH,
         required=True
     )
     current_password = serializers.CharField(
-        max_length=MAX_LENGTH,
+        max_length=CHARFIELD_MAX_LENGTH,
         required=True
     )
 

@@ -38,11 +38,16 @@ class Subscribe(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=~models.Q(subscriber=models.F('author')),
+                name='prevent_self_subscription'
+            )
+        ]
         unique_together = ('subscriber', 'author')
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
 
-    # new
     def clean(self):
         """Запрещаем подписку на самого себя."""
         if self.subscriber == self.author:

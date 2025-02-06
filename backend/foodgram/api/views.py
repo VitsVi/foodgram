@@ -1,12 +1,11 @@
 import os
 
-from core.models import Subscribe
-from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from core.models import Subscribe, User
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 from rest_framework import filters, status, viewsets
@@ -18,12 +17,10 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .filters import RecipeFilter
-from .permissions import IfMeAuthenticated, IsAuthor
+from .permissions import IfMeAuthenticated, RecipePermission
 from .serializers import (IngredientSerializer, ProfleAvatarSerializer,
                           RecipeSerializer, SubscribeSerializer, TagSerializer,
                           UserProfileSerializer)
-
-User = get_user_model()
 
 
 class UserProfileViewset(viewsets.ModelViewSet):
@@ -131,7 +128,7 @@ class TagViewset(viewsets.ModelViewSet):
 class RecipeViewset(viewsets.ModelViewSet):
     """Вьюсет для рецептов."""
 
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (RecipePermission,)
     http_method_names = ('get', 'post', 'patch', 'delete')
     filter_backends = (filters.SearchFilter, DjangoFilterBackend)
     search_fields = ('tags', 'author')
@@ -142,19 +139,8 @@ class RecipeViewset(viewsets.ModelViewSet):
         'is_favorited'
     ]
     filterset_class = RecipeFilter
-    queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     pagination_class = PageNumberPagination
-
-    def get_permissions(self):
-        """Права доступа для рецептов."""
-        if self.request.method == "GET":
-            return []
-        elif self.request.method in ['PATCH', 'PUT']:
-
-            return [IsAuthor()]
-        else:
-            return super().get_permissions()
 
     def get_serializer_context(self):
         """Метод для передачи контекста."""
@@ -163,7 +149,7 @@ class RecipeViewset(viewsets.ModelViewSet):
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = Recipe.objects.all()
         author = self.request.query_params.get('author')
         if author:
             queryset = queryset.filter(author=author)
