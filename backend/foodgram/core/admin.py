@@ -1,7 +1,8 @@
-from core.models import Subscribe, User
 from django.contrib import admin
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet
+
+from core.models import Subscribe, User
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
 

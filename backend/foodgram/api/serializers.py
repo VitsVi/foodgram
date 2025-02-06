@@ -3,10 +3,11 @@ import uuid
 
 from django.core.files.base import ContentFile
 from django.core.validators import RegexValidator, validate_email
+from rest_framework import serializers
+
 from core.models import Subscribe, User
 from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
                            Recipe, ShoppingList, Tag)
-from rest_framework import serializers
 
 CHARFIELD_MAX_LENGTH = 150
 EMAIL_MAX_LENGTH = 254

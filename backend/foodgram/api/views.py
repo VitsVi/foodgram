@@ -5,9 +5,6 @@ from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from core.models import Subscribe, User
-from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
-                           Recipe, ShoppingList, Tag)
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.pagination import (LimitOffsetPagination,
@@ -21,6 +18,9 @@ from .permissions import IfMeAuthenticated, RecipePermission
 from .serializers import (IngredientSerializer, ProfleAvatarSerializer,
                           RecipeSerializer, SubscribeSerializer, TagSerializer,
                           UserProfileSerializer)
+from core.models import Subscribe, User
+from recipe.models import (FavoriteRecipes, Ingredient, IngredientRecipe,
+                           Recipe, ShoppingList, Tag)
 
 
 class UserProfileViewset(viewsets.ModelViewSet):
