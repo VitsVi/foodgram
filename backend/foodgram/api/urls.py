@@ -5,24 +5,24 @@ from .views import (ChangeProfilePasswordView, IngredientViewset,
                     ProfileAvatarViewset, RecipeViewset, SubscribeReadViewset,
                     SubscribeWriteViewset, TagViewset, UserProfileViewset)
 
-router = DefaultRouter(trailing_slash=True)
+router_v1 = DefaultRouter(trailing_slash=True)
 
 # пользователи
-router.register('users', UserProfileViewset, basename='users')
+router_v1.register('users', UserProfileViewset, basename='users')
 
 # теги
-router.register('tags', TagViewset, basename='tags')
+router_v1.register('tags', TagViewset, basename='tags')
 
 # ингредиенты
-router.register(
+router_v1.register(
     'ingredients',
     IngredientViewset,
     basename='ingredients'
 )
 # рецепты
-router.register('recipes', RecipeViewset, basename='recipes')
+router_v1.register('recipes', RecipeViewset, basename='recipes')
 
-router.register(
+router_v1.register(
     r'users/(?P<author_id>\d+)/subscribe',
     SubscribeWriteViewset,
     basename='subscribe'
@@ -38,7 +38,7 @@ urlpatterns = [
         ChangeProfilePasswordView.as_view(),
         name='password'
     ),
-    path('', include(router.urls)),
+    path('', include(router_v1.urls)),
     path('users/me/avatar/', ProfileAvatarViewset.as_view(
         {'put': 'update', 'delete': 'destroy'}
     ), name='avatar'),

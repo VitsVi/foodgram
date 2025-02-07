@@ -73,7 +73,7 @@ if not DEBUG:
             'PORT': os.getenv('DB_PORT', 5432)
         }
     }
-elif DEBUG:
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
