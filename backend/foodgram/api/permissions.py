@@ -26,7 +26,7 @@ class RecipePermission(BasePermission):
     def has_permission(self, request, view):
         """Проверка доступа на уровне запроса."""
         return (
-            request.method == "GET"
+            request.method in SAFE_METHODS
             or request.user.is_authenticated
         )
 
