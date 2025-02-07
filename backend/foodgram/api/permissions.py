@@ -1,4 +1,4 @@
-from rest_framework.permissions import BasePermission
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class IfMeAuthenticated(BasePermission):
@@ -34,5 +34,6 @@ class RecipePermission(BasePermission):
         """Проверка доступа на уровне объекта (рецепта)."""
         return (
             request.method in ['PATCH', 'PUT']
-            or obj.author == request.user
+            and obj.author == request.user
+            or request.method in SAFE_METHODS
         )
