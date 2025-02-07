@@ -24,14 +24,12 @@ class RecipePermission(BasePermission):
     """Проверка доступов к рецептам."""
 
     def has_permission(self, request, view):
-        """Проверка доступа на уровне запроса."""
         return (
             request.method in SAFE_METHODS
             or request.user.is_authenticated
         )
 
     def has_object_permission(self, request, view, obj):
-        """Проверка доступа на уровне объекта (рецепта)."""
         return (
             request.method in SAFE_METHODS
             or obj.author == request.user
