@@ -25,13 +25,14 @@ class RecipePermission(BasePermission):
 
     def has_permission(self, request, view):
         """Проверка доступа на уровне запроса."""
-        if request.method == "GET":
-            return True
-        return request.user and request.user.is_authenticated
+        return (
+            request.method == "GET"
+            or request.user and request.user.is_authenticated
+        )
 
     def has_object_permission(self, request, view, obj):
         """Проверка доступа на уровне объекта (рецепта)."""
         return (
             request.method in ['PATCH', 'PUT']
-            and obj.author == request.user
+            or obj.author == request.user
         )
