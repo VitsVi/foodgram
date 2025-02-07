@@ -33,7 +33,7 @@ class RecipePermission(BasePermission):
     def has_object_permission(self, request, view, obj):
         """Проверка доступа на уровне объекта (рецепта)."""
         return (
-            request.method in ['PATCH', 'PUT']
-            and obj.author == request.user
+            (request.method in ['PATCH', 'PUT']
+            and obj.author == request.user)
             or request.method in SAFE_METHODS
         )
